@@ -28,6 +28,6 @@ deploy:
       branch: staging
   - provider: script
     skip_cleanup: true
-    script: docker-compose run docker-deploy-example npm run build:serverless:deploy
+    script: docker-compose run docker-deploy-example npm run build:prod:deploy
     on:
       branch: master
