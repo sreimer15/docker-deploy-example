@@ -3,11 +3,19 @@ FROM node:8.10
 # Deps
 RUN apt-get -qq update && apt-get -qq install -y ca-certificates git-core ssh python-pip python-dev build-essential default-jdk jq
 
+# Install google chrome for tests
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+RUN apt-get -qq update
+RUN apt-get -qq install -y google-chrome-stable
+RUN export CHROME_BIN=/usr/bin/google-chrome
+
 # Install aws-cli
 RUN pip -q install awscli --upgrade
 
 RUN npm i -g npm
 RUN npm install -g serverless
+
 
 # Create app directory for our source code
 RUN mkdir /app
