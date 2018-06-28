@@ -20,14 +20,9 @@ install:
 script:
   - docker-compose run docker-deploy-example npm run lint
   - docker-compose run docker-deploy-example npm test
-deploy:
-  - provider: script
-    skip_cleanup: true
-    script: docker-compose run docker-deploy-example npm run build:serverless:deploy
-    on:
-      branch: staging
-  - provider: script
-    skip_cleanup: true
-    script: docker-compose run docker-deploy-example npm run build:prod:deploy
-    on:
-      branch: master
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      docker-compose run docker-deploy-example npm run build:prod:deploy
+    fi;
+  - if [ "$TRAVIS_BRANCH" == "staging" ]; then
+      docker-compose run docker-deploy-example npm run build:serverless:deploy
+    fi;
