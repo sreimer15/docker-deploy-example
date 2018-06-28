@@ -1,0 +1,33 @@
+sudo: required
+env:
+  - DOCKER_COMPOSE_VERSION=1.14.0
+language: javascript
+services:
+  - docker
+# Some boiler plate code to install docker compose
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo rm -vf /etc/apt/sources.list.d/*riak*
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confdef" install docker-ce
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+install:
+  - docker-compose build
+script:
+  - docker-compose run docker-deploy-example npm run lint
+  - docker-compose run docker-deploy-example npm test
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: docker-compose run docker-deploy-example npm run build:serverless:deploy
+    on:
+      branch: staging
+  - provider: script
+    skip_cleanup: true
+    script: docker-compose run docker-deploy-example npm run build:serverless:deploy
+    on:
+      branch: master

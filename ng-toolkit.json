@@ -1,0 +1,12 @@
+{
+  "serverless": {
+    "provider": "aws",
+    "skipInstall": false,
+    "directory": ".",
+    "project": "docker-deploy-example",
+    "serverless": {
+      "aws": {},
+      "gcloud": {}
+    }
+  }
+}
